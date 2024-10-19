@@ -1,5 +1,6 @@
 const { User } = require('../Models/User');
 const bcrypt = require('bcrypt')
+const {createHmac, randomBytes} = require('crypto');
 
 
 
@@ -18,8 +19,8 @@ const Register = async (req, res) => {
             return res.status(409).json({ message: 'User already Exists!', success: false })
         }
 
-        const salt = bcrypt.genSaltSync(10);
-        const hashPass = bcrypt.hashSync(password, salt);
+        const salt = randomBytes(16).toString();;
+        const hashPass = createHmac('sha256', salt).update(user.password).digest("hex");
         const newUser = new User({ username, email, role,  salt, password: hashPass });
         await newUser.save();
 
@@ -50,7 +51,7 @@ const Login = async (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials!', success: false })
         }
         const salt = user.salt;
-        const hashPass = bcrypt.hashSync(password, salt);
+        const hashPass = createHmac('sha256', salt).update(user.password).digest("hex");
 
         if (hashPass !== user.password) {
             return res.status(401).json({ message: 'Invalid credentials!', success: false })
