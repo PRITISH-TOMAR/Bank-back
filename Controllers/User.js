@@ -50,7 +50,7 @@ const Login = async (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials!', success: false })
         }
         const salt = user.salt;
-        const hashPass = createHmac('sha256', salt).update(user.password).digest("hex");
+        const hashPass = createHmac('sha256', salt).update(password).digest("hex");
 
         if (hashPass !== user.password) {
             return res.status(401).json({ message: 'Invalid credentials!', success: false })
