@@ -19,7 +19,7 @@ const Register = async (req, res) => {
         }
 
         const salt = randomBytes(16).toString();;
-        const hashPass = createHmac('sha256', salt).update(existUser.password).digest("hex");
+        const hashPass = createHmac('sha256', salt).update(password).digest("hex");
         const newUser = new User({ username, email, role,  salt, password: hashPass });
         await newUser.save();
 
